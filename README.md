@@ -24,7 +24,6 @@
    # Received upon auth
    # Keep SESSION_KEY empty
    SESSION_KEY=
-   TOKEN=YOUR_SESSION_TOKEN
    ```
    For now you can fill out USERNAME
 
