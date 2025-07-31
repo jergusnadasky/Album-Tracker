@@ -27,7 +27,7 @@
    ```
    For now you can fill out USERNAME
 
-  ***Don’t share this file! It contains your private API keys and phone number.***
+  ***Don’t share this file! It contains your private API keys!***
 
   4. Go to https://www.last.fm/api/account/create and create an API Account. Only input a name.
 
