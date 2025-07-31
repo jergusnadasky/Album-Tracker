@@ -1,4 +1,21 @@
-﻿﻿# Album-Tracker
+﻿# Album-Tracker
+
+---
+
+This python script uses the Last.fm API to gather and dump the albums you have listened to recently. Many people in the world discover new music and expand their taste by listening to new albums everyday and I wanted to create a tool that will extract that information and save it automatically . I personally want to keep a record of when I listened to an album and what the album was, and this is a digital way of doing it.
+
+Previously, I logged albums manually in a notes app on my phone, but I wanted a more seamless and automated solution — something that could run in the background and maintain a dated history of what I listened to. This script captures that information and writes it to a text file, and in the future, I plan to sync it with Google Docs for better accessibility and backup.
+
+Ultimately, it solves the small but meaningful problem of keeping a personal music diary without the effort of manual entry.
+
+---
+
+## Requirements
+
+- Python 3.7+
+- [Last.fm Account](https://www.last.fm/)
+
+---
 
 ## Installation
 

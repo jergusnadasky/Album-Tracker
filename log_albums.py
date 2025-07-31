@@ -82,7 +82,7 @@ def log_albums(day_album_map):
                 track_count = len(tracks)
                 print(f"🧪 Album: {album} by {artist} — {track_count} unique tracks on {date}")
 
-                if track_count >= 5:
+                if track_count >= 5: #TODO add check for half of album length
                     entry = f"{date} | {artist} - {album}"
                     f.write(entry + '\n') #TODO fix duplicate entries
                     print("🎧", entry)
