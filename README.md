@@ -15,7 +15,7 @@
 
    ```env
    # Initial detail
-   USERNAME=YOUR_LAST.FM_USERNAME
+   LASTFMUSERNAME=YOUR_LAST.FM_USERNAME
 
    # Received upon API registration
    API_KEY=YOUR_LAST.FM_API_KEY
