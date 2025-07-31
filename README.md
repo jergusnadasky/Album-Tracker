@@ -22,7 +22,7 @@
    API_SECRET=YOUR_LAST.FM_API_SECRET
 
    # Received upon auth
-   SESSION_KEY=YOUR_LAST.FM_SESSION_KEY
+   SESSION_KEY=
    TOKEN=YOUR_SESSION_TOKEN
    ```
    For now you can fill out USERNAME
