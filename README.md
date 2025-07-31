@@ -14,12 +14,18 @@
    In the project root, create a file named `.env` and paste the following:
 
    ```env
+   # Initial detail
+   USERNAME=YOUR_LAST.FM_USERNAME
+
+   # Received upon API registration
    API_KEY=YOUR_LAST.FM_API_KEY
    API_SECRET=YOUR_LAST.FM_API_SECRET
-   USERNAME=YOUR_LAST.FM_USERNAME
+
+   # Received upon auth
    SESSION_KEY=YOUR_LAST.FM_SESSION_KEY
    TOKEN=YOUR_SESSION_TOKEN
    ```
+   For now you can fill out USERNAME
 
   ***Don’t share this file! It contains your private API keys and phone number.***
 
