@@ -11,8 +11,27 @@ API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
 USERNAME = os.getenv("LASTFMUSERNAME")
 SESSION_KEY = os.getenv("SESSION_KEY")
-LIMIT = 200
+LIMIT = 200  # <- Adjust this limit as needed
 LOG_FILE = 'album_log.txt'
+album_cache = set()
+
+class Album:
+    def __init__(self, name, artist, date):
+        self.name = name.strip().lower()
+        self.artist = artist.strip().lower()
+        self.date = date
+
+    def __eq__(self, other):
+        return (self.name, self.artist) == (other.name, other.artist)
+
+    def __hash__(self):
+        return hash((self.name, self.artist))
+
+    def __str__(self):
+        return f"{self.date} | {self.artist} - {self.name}"
+
+    def __repr__(self):
+        return self.__str__()
 
 def generate_api_sig(params):
     raw = ''.join(f"{k}{v}" for k, v in sorted(params.items()))
@@ -22,7 +41,6 @@ def generate_api_sig(params):
 def get_recent_tracks():
     url = 'https://ws.audioscrobbler.com/2.0/'
     
-    # Parameters used for signature
     sig_params = {
         'method': 'user.getRecentTracks',
         'user': USERNAME,
@@ -31,31 +49,19 @@ def get_recent_tracks():
         'extended': '1',
         'sk': SESSION_KEY
     }
-    
-    # Generate signature
+
     api_sig = generate_api_sig(sig_params)
-    
-    # Add format after signature
     sig_params['format'] = 'json'
     sig_params['api_sig'] = api_sig
 
     response = requests.get(url, params=sig_params)
-    
-    print(response.status_code)
-    print(response.text)
-    
-    print(f"✅ Fetched {len(response.json().get('recenttracks', {}).get('track', []))} tracks")
     return response.json()
-
-
-
 
 def timestamp_to_date(ts):
     return datetime.utcfromtimestamp(int(ts)).strftime('%Y-%m-%d')
 
 def group_tracks_by_day_and_album(tracks):
     day_album_map = defaultdict(lambda: defaultdict(set))
-    print("📅 Grouping tracks...")
     for track in tracks:
         if 'date' not in track:
             continue
@@ -63,38 +69,47 @@ def group_tracks_by_day_and_album(tracks):
         album = track['album']['#text']
         artist = track['artist']['name']
         name = track['name']
-        print(f"Track: {name} | Artist: {artist} | Album: {album} | Date: {date}")
         if album:
             key = f"{album}///{artist}"
             day_album_map[date][key].add(name)
-
-
-    print("📅 Grouping tracks...")
-    print(f"Track: {name} | Artist: {artist} | Album: {album} | Date: {date}")
-
     return day_album_map
 
 def log_albums(day_album_map):
-    with open(LOG_FILE, 'a') as f:
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
         for date, albums in day_album_map.items():
             for full_album_key, tracks in albums.items():
                 album, artist = full_album_key.split("///")
                 track_count = len(tracks)
-                print(f"🧪 Album: {album} by {artist} — {track_count} unique tracks on {date}")
 
-                if track_count >= 5: #TODO add check for half of album length
-                    entry = f"{date} | {artist} - {album}"
-                    f.write(entry + '\n') #TODO fix duplicate entries
-                    print("🎧", entry)
-                print(f"✅ Logging: {artist} - {album} on {date}")
+                if track_count >= 5:  # Placeholder logic
+                    album_key = (album.strip().lower(), artist.strip().lower())
 
+                    if album_key not in album_cache:
+                        album_cache.add(album_key)
+                        album_obj = Album(album, artist, date)
+                        f.write(str(album_obj) + '\n')
+                    else:
+                        print(f"Album already logged: {date} | {artist.strip().lower()} - {album.strip().lower()}")
+
+def load_existing_albums(file_path):
+    cache = set()
+    if not os.path.exists(file_path):
+        return cache
+    with open(file_path, 'r', encoding='utf-8') as f:
+        for line in f:
+            if "|" in line:
+                date_part, album_part = line.strip().split(" | ", 1)
+                if " - " in album_part:
+                    artist, name = album_part.split(" - ", 1)
+                    cache.add((name.strip().lower(), artist.strip().lower()))
+    return cache
 
 if __name__ == "__main__":
-    print("📡 Fetching recent tracks...")
+    print("Fetching recent tracks...")
+    album_cache = load_existing_albums(LOG_FILE)
     data = get_recent_tracks()
     tracks = data.get('recenttracks', {}).get('track', [])
     grouped = group_tracks_by_day_and_album(tracks)
     log_albums(grouped)
-    print("✅ Done.")
-    print(f"📂 Writing to: {LOG_FILE}")
-
+    print("Done.")
+    print(f"Writing to: {LOG_FILE}")
