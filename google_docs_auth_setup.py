@@ -46,9 +46,7 @@ def append_to_doc(service, document_id, text):
     requests = [
         {
             'insertText': {
-                'location': {
-                    'index': 1,
-                },
+                'endOfSegmentLocation': {},
                 'text': text + '\n'  # Append text with a newline
             }
         }

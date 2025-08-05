@@ -11,7 +11,7 @@ API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
 USERNAME = os.getenv("LASTFMUSERNAME")
 SESSION_KEY = os.getenv("SESSION_KEY")
-LIMIT = 1000  # <- Adjust this limit as needed
+LIMIT = 200  # <- Adjust this limit as needed
 LOG_FILE = 'album_log.txt'
 album_cache = set()
 google_docs_text = ""
@@ -93,7 +93,7 @@ def log_albums(day_album_map):
                         album_cache.add(album_key)
                         album_obj = Album(album, artist, date)
                         f.write(str(album_obj) + '\n')
-                        google_docs_text += str(album_obj) + '\n'
+                        google_docs_text += str(album_obj)
                     
     with open(LOG_FILE, 'a', encoding='utf-8') as f:
         for date in sorted(day_album_map.keys(), reverse=True):  # <-- sort by date descending
