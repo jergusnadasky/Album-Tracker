@@ -11,9 +11,10 @@ API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
 USERNAME = os.getenv("LASTFMUSERNAME")
 SESSION_KEY = os.getenv("SESSION_KEY")
-LIMIT = 200  # <- Adjust this limit as needed
+LIMIT = 1000  # <- Adjust this limit as needed
 LOG_FILE = 'album_log.txt'
 album_cache = set()
+google_docs_text = ""
 
 class Album:
     def __init__(self, name, artist, date):
@@ -75,8 +76,28 @@ def group_tracks_by_day_and_album(tracks):
     return day_album_map
 
 def log_albums(day_album_map):
+    
+    global google_docs_text
+    
     with open(LOG_FILE, 'a', encoding='utf-8') as f:
-        for date, albums in day_album_map.items():
+        for date in sorted(day_album_map.keys()):  # Oldest first
+            albums = day_album_map[date]
+            for full_album_key, tracks in albums.items():
+                album, artist = full_album_key.split("///")
+                track_count = len(tracks)
+
+                if track_count >= 5:
+                    album_key = (album.strip().lower(), artist.strip().lower())
+
+                    if album_key not in album_cache:
+                        album_cache.add(album_key)
+                        album_obj = Album(album, artist, date)
+                        f.write(str(album_obj) + '\n')
+                        google_docs_text += str(album_obj) + '\n'
+                    
+    with open(LOG_FILE, 'a', encoding='utf-8') as f:
+        for date in sorted(day_album_map.keys(), reverse=True):  # <-- sort by date descending
+            albums = day_album_map[date]
             for full_album_key, tracks in albums.items():
                 album, artist = full_album_key.split("///")
                 track_count = len(tracks)
@@ -88,9 +109,11 @@ def log_albums(day_album_map):
                         album_cache.add(album_key)
                         album_obj = Album(album, artist, date)
                         f.write(str(album_obj) + '\n')
-                    else:
-                        print(f"Album already logged: {date} | {artist.strip().lower()} - {album.strip().lower()}")
+                
 
+def get_album_log_text():
+    return google_docs_text
+        
 def load_existing_albums(file_path):
     cache = set()
     if not os.path.exists(file_path):
@@ -104,7 +127,11 @@ def load_existing_albums(file_path):
                     cache.add((name.strip().lower(), artist.strip().lower()))
     return cache
 
-if __name__ == "__main__":
+
+
+
+def start():
+    global album_cache  # Tell Python to use the global variable, not create a local one
     print("Fetching recent tracks...")
     album_cache = load_existing_albums(LOG_FILE)
     data = get_recent_tracks()

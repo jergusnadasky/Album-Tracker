@@ -48,7 +48,7 @@ def get_session_key(url):
         print("Failed to get session key:", data)
         return None
 
-def main():
+def start():
     global API_KEY, API_SECRET, SESSION_KEY
 
     if not API_KEY or not API_SECRET:
@@ -57,8 +57,6 @@ def main():
         return
 
     if SESSION_KEY:
-        print("Session key already found in .env. No need to authenticate again.")
-        print(f"SESSION_KEY={SESSION_KEY}")
         return
 
     auth_url = f"http://www.last.fm/api/auth/?api_key={API_KEY}"
@@ -75,5 +73,3 @@ def main():
     else:
         print("Could not obtain session key. Please try again.")
 
-if __name__ == "__main__":
-    main()
