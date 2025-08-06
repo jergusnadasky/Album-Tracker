@@ -32,27 +32,25 @@ Ultimately, it solves the small but meaningful problem of keeping a personal mus
 
    ```env
    # Initial detail
-   LASTFMUSERNAME=YOUR_LAST.FM_USERNAME
+   LASTFMUSERNAME=''
 
    # Received upon API registration
-   API_KEY=YOUR_LAST.FM_API_KEY
-   API_SECRET=YOUR_LAST.FM_API_SECRET
+   API_KEY=''
+   API_SECRET=''
 
    # Received upon auth
    # Keep SESSION_KEY empty
-   SESSION_KEY=
-   ```
-   For now you can fill out USERNAME
+   SESSION_KEY=''
 
+   #Google Docs API credentials
+   # Keep GOOGLE_DOCS_URL empty
+   GOOGLE_DOCS_URL=''
+
+   ```
   ***Don’t share this file! It contains your private API keys!***
 
-  4. Go to https://www.last.fm/api/account/create and create an API Account. Only input a name.
+  4. Run main.py and fill out the fields.
 
-  5. Paste API key and API secret into .env file inside of the quotes
+  5. after the redirect, copy the url and paste it into the console.
 
-  6. run auth_setup.py and click allow access.
-
-  7. after the redirect, copy the url and paste it into the console.
-
-  8. Run log_albums.py and profit
 
