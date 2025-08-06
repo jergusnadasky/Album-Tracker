@@ -7,6 +7,7 @@ use_google_docs = False
 
 input("Welcome to the Last.fm Album Logger! Press Enter to continue...")
 last_fm_auth_setup.start()
+print("Last.fm authentication complete.")
 
 
 while i != 1:
@@ -19,8 +20,7 @@ while i != 1:
         document_id = google_docs_auth_setup.get_document_id_from_user()
         
     elif userChoice == 'n':
-        i = 1
-        use_google_docs = False
+        break
     else:
         print("Invalid input, please try again.")
         

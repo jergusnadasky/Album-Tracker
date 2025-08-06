@@ -5,7 +5,7 @@ from datetime import datetime
 import hashlib
 from dotenv import load_dotenv
 
-load_dotenv()
+load_dotenv(override=True)
 
 API_KEY = os.getenv("API_KEY")
 API_SECRET = os.getenv("API_SECRET")
@@ -40,15 +40,17 @@ def generate_api_sig(params):
     return hashlib.md5(raw.encode('utf-8')).hexdigest()
 
 def get_recent_tracks():
+    load_dotenv(override=True)
+    
     url = 'https://ws.audioscrobbler.com/2.0/'
     
     sig_params = {
         'method': 'user.getRecentTracks',
-        'user': USERNAME,
-        'api_key': API_KEY,
+        'user': os.getenv("LASTFMUSERNAME"),
+        'api_key': os.getenv("API_KEY"),
         'limit': str(LIMIT),
         'extended': '1',
-        'sk': SESSION_KEY
+        'sk': os.getenv("SESSION_KEY")
     }
 
     api_sig = generate_api_sig(sig_params)
@@ -56,6 +58,7 @@ def get_recent_tracks():
     sig_params['api_sig'] = api_sig
 
     response = requests.get(url, params=sig_params)
+
     return response.json()
 
 def timestamp_to_date(ts):
@@ -131,6 +134,11 @@ def load_existing_albums(file_path):
 
 
 def start():
+    load_dotenv(override=True)
+    API_KEY = os.getenv("API_KEY")
+    API_SECRET = os.getenv("API_SECRET")
+    USERNAME = os.getenv("LASTFMUSERNAME")
+    SESSION_KEY = os.getenv("SESSION_KEY")
     global album_cache  # Tell Python to use the global variable, not create a local one
     print("Fetching recent tracks...")
     album_cache = load_existing_albums(LOG_FILE)

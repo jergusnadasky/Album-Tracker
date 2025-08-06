@@ -25,6 +25,8 @@ def save_to_env(key, value):
             f.write('')
         dotenv_path = '.env'
     set_key(dotenv_path, key, value)
+    load_dotenv(override=True)
+
 
 def get_session_key(url):
 
@@ -70,6 +72,7 @@ def start():
         
     if SESSION_KEY:
         return
+    
     load_dotenv(override=True)
 
     auth_url = f"http://www.last.fm/api/auth/?api_key={os.getenv("API_KEY")}"
@@ -82,6 +85,7 @@ def start():
     if session_key:
         print(f"Success! Your session key is:\n{session_key}")
         save_to_env("SESSION_KEY", session_key)
+        load_dotenv(override=True)
         print("Saved SESSION_KEY to .env for future use.")
     else:
         print("Could not obtain session key. Please try again.")
