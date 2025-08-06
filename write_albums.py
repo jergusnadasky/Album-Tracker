@@ -93,7 +93,7 @@ def log_albums(day_album_map):
                         album_cache.add(album_key)
                         album_obj = Album(album, artist, date)
                         f.write(str(album_obj) + '\n')
-                        google_docs_text += str(album_obj)
+                        google_docs_text += str(album_obj) + '\n'
                     
     with open(LOG_FILE, 'a', encoding='utf-8') as f:
         for date in sorted(day_album_map.keys(), reverse=True):  # <-- sort by date descending

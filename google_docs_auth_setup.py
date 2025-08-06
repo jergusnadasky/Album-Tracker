@@ -3,6 +3,7 @@
 
 #https://console.cloud.google.com/apis/library/docs.googleapis.com?inv=1&invt=Ab4rLg&project=ddos-300917
 
+from tkinter import Tk, filedialog
 from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
@@ -31,23 +32,52 @@ def get_document_id_from_user():
 
 def get_google_docs_service():
     creds = None
+
     if os.path.exists('token.json'):
         creds = Credentials.from_authorized_user_file('token.json', SCOPES)
-    else:
-        flow = InstalledAppFlow.from_client_secrets_file(
-            'credentials.json', SCOPES)
-        creds = flow.run_local_server(port=0)
-        with open('token.json', 'w') as token:
-            token.write(creds.to_json())
 
-    return build('docs', 'v1', credentials=creds)
+    if not creds or not creds.valid:
+        try:
+            print("Token not found or invalid. Please select your credentials.json file.")
+
+            # Use tkinter file dialog to select credentials file
+            root = Tk()
+            root.withdraw()  # Hide the main window
+            cred_file = filedialog.askopenfilename(
+                title="Select your Google API credentials.json",
+                filetypes=[("JSON files", "*.json")]
+            )
+            root.destroy()
+
+            if not cred_file:
+                raise Exception("No credentials file selected.")
+
+            flow = InstalledAppFlow.from_client_secrets_file(cred_file, SCOPES)
+            creds = flow.run_local_server(port=0)
+
+            with open('token.json', 'w') as token:
+                token.write(creds.to_json())
+
+        except Exception as e:
+            print("\n❌ ERROR: Could not complete Google Docs authentication.")
+            print("👉 Visit https://console.cloud.google.com/ to enable the Google Docs API and download your credentials.json file.")
+            print(f"📄 Error Details: {e}")
+            return None
+
+    try:
+        service = build('docs', 'v1', credentials=creds)
+        print("✅ Google Docs service ready.")
+        return service
+    except Exception as e:
+        print(f"❌ Failed to build Google Docs service: {e}")
+        return None
 
 def append_to_doc(service, document_id, text):
     requests = [
         {
             'insertText': {
                 'endOfSegmentLocation': {},
-                'text': text + '\n'  # Append text with a newline
+                'text': text + '\n' # Append text with a newline
             }
         }
     ]

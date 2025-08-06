@@ -5,6 +5,10 @@ import write_albums
 i = 0
 use_google_docs = False
 
+input("Welcome to the Last.fm Album Logger! Press Enter to continue...")
+last_fm_auth_setup.start()
+
+
 while i != 1:
     userChoice = input("Type 'y' to use Google Docs API integration: [y/n] ").strip().lower()
 
@@ -20,7 +24,6 @@ while i != 1:
     else:
         print("Invalid input, please try again.")
         
-last_fm_auth_setup.start()
 write_albums.start()
     
 

@@ -1,6 +1,7 @@
 import os
 import hashlib
 from urllib.parse import parse_qs, urlparse
+from anyio import sleep
 import requests
 import webbrowser
 from dotenv import load_dotenv, set_key, find_dotenv
@@ -50,20 +51,32 @@ def get_session_key(url):
 
 def start():
     global API_KEY, API_SECRET, SESSION_KEY
+    
+    print("Starting Last.fm authentication setup...")
+    
+    if not os.getenv('LASTFMUSERNAME'):
+        print("ERROR: Last.fm username not found in .env.")
+        set_key('.env', 'LASTFMUSERNAME', input("Enter your Last.fm username: ").strip())
 
     if not API_KEY or not API_SECRET:
-        print("ERROR: Please add API_KEY and API_SECRET to your .env file before running this script.")
+        print("ERROR: API_KEY or API_SECRET have not been found.")
         print("You can get these by creating an app here: https://www.last.fm/api/account/create")
-        return
-
+        API_KEY = input("Enter your Last.fm API Key: ").strip()
+        API_SECRET = input("Enter your Last.fm API Secret: ").strip()
+        
+        save_to_env("API_KEY", API_KEY)
+        save_to_env("API_SECRET", API_SECRET)  
+         
+        
     if SESSION_KEY:
         return
+    load_dotenv(override=True)
 
-    auth_url = f"http://www.last.fm/api/auth/?api_key={API_KEY}"
+    auth_url = f"http://www.last.fm/api/auth/?api_key={os.getenv("API_KEY")}"
     print(f"Opening browser for authorization:\n{auth_url}\n")
     webbrowser.open(auth_url)
 
-    token = input("After authorizing the app, please paste the URL here: ").strip()
+    token = input("After authorizing the app, please paste the re-direct URL here: ").strip()
 
     session_key = get_session_key(token)
     if session_key:
