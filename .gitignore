@@ -4,5 +4,5 @@ token.json
 *.json
 _pycache_/
 __pycache__
-buid/
+build/
 dist/
