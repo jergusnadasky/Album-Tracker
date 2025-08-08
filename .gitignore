@@ -1,4 +1,6 @@
 album_log.txt
 .env
 token.json
-credentials.json
+*.json
+_pycache_/
+__pycache__

@@ -1,7 +1,7 @@
 # google_docs_auth_setup.py
 
 
-#https://console.cloud.google.com/apis/library/docs.googleapis.com?inv=1&invt=Ab4rLg&project=ddos-300917
+#https://console.cloud.google.com/welcome?inv=1&invt=Ab48Fw&project=ddos-300917
 
 from tkinter import Tk, filedialog
 from google.oauth2.credentials import Credentials
@@ -38,19 +38,19 @@ def get_google_docs_service():
 
     if not creds or not creds.valid:
         try:
-            print("Token not found or invalid. Please select your credentials.json file.")
+            print("Token not found or invalid. Please select your client_secret.json file.")
 
             # Use tkinter file dialog to select credentials file
             root = Tk()
             root.withdraw()  # Hide the main window
             cred_file = filedialog.askopenfilename(
-                title="Select your Google API credentials.json",
+                title="Select your Google API client_secret.json",
                 filetypes=[("JSON files", "*.json")]
             )
             root.destroy()
 
             if not cred_file:
-                raise Exception("No credentials file selected.")
+                raise Exception("No client_secret file selected.")
 
             flow = InstalledAppFlow.from_client_secrets_file(cred_file, SCOPES)
             creds = flow.run_local_server(port=0)
@@ -60,7 +60,7 @@ def get_google_docs_service():
 
         except Exception as e:
             print("\n❌ ERROR: Could not complete Google Docs authentication.")
-            print("👉 Visit https://console.cloud.google.com/ to enable the Google Docs API and download your credentials.json file.")
+            print("👉 Visit https://console.cloud.google.com/ to enable the Google Docs API and download your client_secret.json file.")
             print(f"📄 Error Details: {e}")
             return None
 
