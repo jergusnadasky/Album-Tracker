@@ -1,3 +1,4 @@
+import os
 import google_docs_auth_setup
 import last_fm_auth_setup
 import write_albums
@@ -22,9 +23,11 @@ def main():
     print(Fore.GREEN + "✅ Last.fm authentication complete.\n")
 
     while i != 1:
-        userChoice = input(Fore.CYAN + "📝 Use Google Docs integration? [y/n]: ").strip().lower()
+        
+        if not os.path.exists('token.json'):
+            userChoice = input(Fore.CYAN + "📝 Use Google Docs integration? [y/n]: ").strip().lower()
 
-        if userChoice == 'y':
+        if os.path.exists('token.json') or userChoice == 'y':
             i = 1
             service = google_docs_auth_setup.get_google_docs_service()
 
@@ -45,4 +48,5 @@ def main():
             print(Fore.RED + "❌ Invalid input. Please type 'y' or 'n'.")
 
 if __name__ == "__main__":
+    print("App started")
     main()
